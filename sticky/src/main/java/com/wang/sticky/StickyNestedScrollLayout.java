@@ -120,11 +120,6 @@ public final class StickyNestedScrollLayout extends FrameLayout {
             super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
         }
 
-        @Override
-        public boolean onStartNestedScroll(@NonNull View child, @NonNull View target, int axes, int type) {
-            return super.onStartNestedScroll(child, target, axes, type);
-        }
-
         /**
          * 修复滑动类似RecyclerView时不跟随的问题
          */

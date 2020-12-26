@@ -10,7 +10,7 @@
 
 2.悬浮控件ui变化会导致错乱（如悬浮是可横滑的控件）
 
-##使用方式：
+## 使用方式：
 基于NestedScrollView所以只允许有一个child：
 
 然后加上android:tag="sticky"即可实现悬浮（目前只支持直接子类，在三级、四级child使用无效）
@@ -39,7 +39,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="match_parent"//这里的match无效
                 android:tag="match"//高度match，任意child均可
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:spanCount="2" />
@@ -68,3 +68,10 @@ allprojects {
 ```
 然后：
 `implementation（或api） 'com.github.weimingjue:sticky:0.9.0'`
+
+## 说明
+如果没有tag="sticky"则它就是一个可嵌套滑动的view
+
+支持androidX所有view及第三方的View嵌套，不支持ListView
+
+无需混淆配置
