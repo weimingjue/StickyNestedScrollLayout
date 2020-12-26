@@ -27,5 +27,8 @@ dependencies {
     implementation project(':sticky')
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    //自己的adapter
+    api 'com.github.weimingjue:BaseAdapter:4.1.3'
 }
