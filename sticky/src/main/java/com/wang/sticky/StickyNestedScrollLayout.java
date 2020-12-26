@@ -199,15 +199,21 @@ public final class StickyNestedScrollLayout extends FrameLayout {
         @Override
         public void addView(View child, int index, ViewGroup.LayoutParams params) {
             super.addView(child, index, params);
-            if (child instanceof ViewGroup) {
-                ViewGroup vg = (ViewGroup) child;
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    View cv = vg.getChildAt(i);
-                    if (TAG_STICKY.equals(cv.getTag()) || TAG_STICKY.equals(cv.getTag(R.id.tag_sticky))) {
-                        mStickyView = cv;
-                        mStickyParams = mStickyView.getLayoutParams();
-                        mStickyParent = (ViewGroup) mStickyView.getParent();
-                        mStickyIndex = i;
+            getStickyView();
+        }
+
+        private void getStickyView() {
+            if (getChildCount() > 0) {
+                if (getChildAt(0) instanceof ViewGroup) {
+                    ViewGroup vg = (ViewGroup) getChildAt(0);
+                    for (int i = 0; i < vg.getChildCount(); i++) {
+                        View cv = vg.getChildAt(i);
+                        if (TAG_STICKY.equals(cv.getTag()) || TAG_STICKY.equals(cv.getTag(R.id.tag_sticky))) {
+                            mStickyView = cv;
+                            mStickyParams = mStickyView.getLayoutParams();
+                            mStickyParent = (ViewGroup) mStickyView.getParent();
+                            mStickyIndex = i;
+                        }
                     }
                 }
             }
@@ -312,5 +318,6 @@ public final class StickyNestedScrollLayout extends FrameLayout {
     public void setChildTag(View child, String tag) {
         child.setTag(R.id.tag_sticky, tag);
         requestLayout();
+        mStickyView.getStickyView();
     }
 }
