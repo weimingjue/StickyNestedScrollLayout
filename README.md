@@ -1,10 +1,13 @@
 # 主要解决AppBarLayout的置顶效果存在的以下问题
 
 1.头部超过一屏回拉会出现明显卡顿
+
 2.惯性滑动无法用手指停下
+
 3.悬浮下必须有1屏的大小
 ### 还有其他置顶控件的问题：
 1.滑动类似RecyclerView并不会悬浮
+
 2.悬浮控件ui变化会导致错乱（如悬浮是可横滑的控件）
 
 ##使用方式：
@@ -50,3 +53,18 @@ StickyNestedScrollLayout.setChildTag(tv,"sticky");
 StickyNestedScrollLayout.setOnStickyScrollChangedListener();
 StickyNestedScrollLayout.getStickyTop();
 ```
+
+## 导入方式
+你的build.gradle要有jitpack.io，大致如下：
+```
+allprojects {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://jitpack.io' }
+        google()
+        jcenter()
+    }
+}
+```
+然后：
+`implementation（或api） 'com.github.weimingjue:sticky:0.9.0'`
