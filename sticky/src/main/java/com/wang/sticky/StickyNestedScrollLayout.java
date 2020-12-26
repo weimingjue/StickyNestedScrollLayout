@@ -93,6 +93,7 @@ public final class StickyNestedScrollLayout extends FrameLayout {
     private static class StickyView extends NestedScrollView {
         private View mStickyView;
         private ViewGroup.LayoutParams mStickyParams;
+        private int mStickyParamsHeight;
         private ViewGroup mStickyParent;
         private int mStickyIndex;
 
@@ -224,13 +225,16 @@ public final class StickyNestedScrollLayout extends FrameLayout {
                     if (mFlAdd.getChildCount() > 0 && mFlAdd.getChildAt(0) == mStickyView) {
                         mFlAdd.removeAllViews();
                         mStickyParent.removeView(mEmptyView);
+                        mStickyParams.height = mStickyParamsHeight;
                         mStickyParent.addView(mStickyView, mStickyIndex, mStickyParams);
                     }
                 } else {
                     if (mFlAdd.getChildCount() == 0) {
                         mStickyParent.removeView(mStickyView);
+                        mStickyParamsHeight = mStickyParams.height;
+                        mStickyParams.height = mStickyView.getHeight();
                         mStickyParent.addView(mEmptyView, mStickyIndex, mStickyParams);
-                        mFlAdd.addView(mStickyView, generateLayoutParams(mStickyParams));
+                        mFlAdd.addView(mStickyView, generateNewLayoutParams(mStickyParams));
                     }
                 }
 
@@ -258,6 +262,20 @@ public final class StickyNestedScrollLayout extends FrameLayout {
 
         public void setOnStickyScrollChangedListener(OnStickyScrollChangedListener listener) {
             mListener = listener;
+        }
+
+        /**
+         * new 出来的，不是原对象
+         */
+        private LayoutParams generateNewLayoutParams(ViewGroup.LayoutParams lp) {
+            if (lp instanceof LayoutParams) {
+                LayoutParams params = new LayoutParams((MarginLayoutParams) lp);
+                params.gravity = ((LayoutParams) lp).gravity;
+                return params;
+            } else if (lp instanceof MarginLayoutParams) {
+                return new LayoutParams((MarginLayoutParams) lp);
+            }
+            return new LayoutParams(lp);
         }
     }
 
