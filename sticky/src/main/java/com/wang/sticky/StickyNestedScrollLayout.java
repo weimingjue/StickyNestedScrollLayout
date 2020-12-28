@@ -126,16 +126,16 @@ public final class StickyNestedScrollLayout extends FrameLayout {
          */
         @Override
         public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
-            int stickyTop = getStickyTop();
-            if (dy > 0) {//往上滑才会时不跟随
-                if (stickyTop > 0) {
-                    int dy2 = Math.min(dy, stickyTop);
-                    consumed[1] = consumed[1] + dy2;
-                    scrollBy(0, dy2);
-                    return;//暂时先不管父类
-                }
+            if (dy > 0) {//nsv往上滑不跟随，这里处理一下
                 if (canScrollVertically(1)) {
-                    consumed[1] = consumed[1] + dy;
+                    int stickyTop = getStickyTop();
+                    int dy2;
+                    if (stickyTop > 0) {
+                        dy2 = Math.min(dy, stickyTop);
+                    } else {
+                        dy2 = dy;
+                    }
+                    consumed[1] = consumed[1] + dy2;
                     scrollBy(0, dy);
                     return;//暂时先全部消耗掉（几像素）
                 }

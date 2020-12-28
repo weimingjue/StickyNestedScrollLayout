@@ -54,6 +54,11 @@ StickyNestedScrollLayout.setOnStickyScrollChangedListener();
 StickyNestedScrollLayout.getStickyTop();
 ```
 
+### 背景色问题：
+首先说一下悬浮原理：当滑到顶端时，将要悬浮的view remove掉然后添加到顶部
+
+所以背景色自己再设置一下就行了
+
 ## 导入方式
 你的build.gradle要有jitpack.io，大致如下：
 ```
@@ -67,7 +72,7 @@ allprojects {
 }
 ```
 然后：
-`implementation（或api） 'com.github.weimingjue:sticky:0.9.0'`
+`implementation（或api） 'com.github.weimingjue:sticky:0.9.2'`
 
 ## 说明
 如果没有tag="sticky"则它就是一个可嵌套滑动的view
