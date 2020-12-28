@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -157,7 +158,7 @@ public final class StickyNestedScrollLayout extends FrameLayout {
         private void changeMatch(View view, int height) {
             if (TAG_MATCH.equals(view.getTag()) || TAG_MATCH.equals(view.getTag(R.id.tag_sticky))) {
                 ViewGroup.LayoutParams params = view.getLayoutParams();
-                if (params != null && params.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                if (params != null) {
                     params.height = height;
                 }
             }
@@ -272,6 +273,10 @@ public final class StickyNestedScrollLayout extends FrameLayout {
             if (lp instanceof LayoutParams) {
                 LayoutParams params = new LayoutParams((MarginLayoutParams) lp);
                 params.gravity = ((LayoutParams) lp).gravity;
+                return params;
+            } else if (lp instanceof LinearLayout.LayoutParams) {
+                LayoutParams params = new LayoutParams((MarginLayoutParams) lp);
+                params.gravity = ((LinearLayout.LayoutParams) lp).gravity;
                 return params;
             } else if (lp instanceof MarginLayoutParams) {
                 return new LayoutParams((MarginLayoutParams) lp);
