@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         mRv = findViewById(R.id.rv_main);
         BaseAdapterRvList<?, String> adapter = BaseAdapterRvList.createAdapter(R.layout.adapter_main);
         ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 80; i++) {
             list.add("第" + i);
         }
         adapter.setListAndNotifyDataSetChanged(list);

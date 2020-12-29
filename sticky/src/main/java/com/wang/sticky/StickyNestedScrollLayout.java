@@ -136,7 +136,7 @@ public final class StickyNestedScrollLayout extends FrameLayout {
                         dy2 = dy;
                     }
                     consumed[1] = consumed[1] + dy2;
-                    scrollBy(0, dy);
+                    scrollBy(0, dy2);
                     return;//暂时先全部消耗掉（几像素）
                 }
             }
