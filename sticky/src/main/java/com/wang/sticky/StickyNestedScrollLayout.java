@@ -56,6 +56,9 @@ public final class StickyNestedScrollLayout extends FrameLayout {
         }
         FrameLayout fl = new FrameLayout(getContext());
         mStickyView = new StickyView(getContext(), fl);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            mStickyView.setClipChildren(getClipChildren());
+        }
         mStickyView.addView(child, index, params);
         super.addView(mStickyView, -1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         super.addView(fl, -1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
