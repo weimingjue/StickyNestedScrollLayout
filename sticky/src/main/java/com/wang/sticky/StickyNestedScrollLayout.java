@@ -313,6 +313,13 @@ public final class StickyNestedScrollLayout extends FrameLayout {
     }
 
     /**
+     * 获得内部滑动的view，可设置Scroll相关操作
+     */
+    public NestedScrollView getScrollView() {
+        return mStickyView;
+    }
+
+    /**
      * 备用方法：当tag被占用时
      *
      * @param child 直接或间接子类
