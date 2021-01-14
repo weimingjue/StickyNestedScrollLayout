@@ -20,14 +20,14 @@ import androidx.core.widget.NestedScrollView;
  * 悬浮view，基于NestedScrollView，所以只能有一个child（不使用悬浮可当做NestedScrollView的优化版）
  * <p>
  * 使用：
- * 设置tag：sticky即可悬浮（只支持child第一层的tag）
+ * 设置tag：sticky即可悬浮
  * <p>
  * 附加：{@link #setOnStickyScrollChangedListener}{@link #getStickyTop}{@link #setChildTag}
- * tag：match撑满布局（支持深层child）
+ * tag：match撑满布局
  */
 public final class StickyNestedScrollLayout extends FrameLayout {
     public static final String TAG_STICKY = "sticky", TAG_MATCH = "match";
-    private StickyView mStickyView;
+    private MyScrollView mScrollView;
 
     public StickyNestedScrollLayout(Context context) {
         this(context, null);
@@ -55,12 +55,12 @@ public final class StickyNestedScrollLayout extends FrameLayout {
             throw new RuntimeException("只允许添加一个子类");
         }
         FrameLayout fl = new FrameLayout(getContext());
-        mStickyView = new StickyView(getContext(), fl);
+        mScrollView = new MyScrollView(getContext(), fl);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            mStickyView.setClipChildren(getClipChildren());
+            mScrollView.setClipChildren(getClipChildren());
         }
-        mStickyView.addView(child, index, params);
-        super.addView(mStickyView, -1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mScrollView.addView(child, index, params);
+        super.addView(mScrollView, -1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         super.addView(fl, -1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -94,8 +94,9 @@ public final class StickyNestedScrollLayout extends FrameLayout {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 私有类
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private static class StickyView extends NestedScrollView {
+    private static final class MyScrollView extends NestedScrollView {
         private View mStickyView;
+        private boolean mNoneSticky = false;//没有sticky tag，将不会再遍历直接返回null
         private ViewGroup.LayoutParams mStickyParams;
         private int mStickyParamsHeight;
         private ViewGroup mStickyParent;
@@ -108,7 +109,7 @@ public final class StickyNestedScrollLayout extends FrameLayout {
 
         private OnStickyScrollChangedListener mListener;
 
-        public StickyView(Context context, FrameLayout flAdd) {
+        public MyScrollView(Context context, FrameLayout flAdd) {
             super(context);
             mFlAdd = flAdd;
         }
@@ -195,27 +196,43 @@ public final class StickyNestedScrollLayout extends FrameLayout {
         /**
          * 获得悬浮view
          */
-        @Override
-        public void addView(View child, int index, ViewGroup.LayoutParams params) {
-            super.addView(child, index, params);
-            getStickyView();
+        @Nullable
+        private View getStickyView() {
+            if (mNoneSticky) {
+                return null;
+            }
+
+            if (getChildCount() > 0) {
+                View stickyView = getStickyView(getChildAt(0), 0);
+                if (stickyView == null) {
+                    mNoneSticky = true;
+                }
+                return stickyView;
+            }
+            return null;
         }
 
-        private void getStickyView() {
-            if (getChildCount() > 0) {
-                if (getChildAt(0) instanceof ViewGroup) {
-                    ViewGroup vg = (ViewGroup) getChildAt(0);
-                    for (int i = 0; i < vg.getChildCount(); i++) {
-                        View cv = vg.getChildAt(i);
-                        if (TAG_STICKY.equals(cv.getTag()) || TAG_STICKY.equals(cv.getTag(R.id.tag_sticky))) {
-                            mStickyView = cv;
-                            mStickyParams = mStickyView.getLayoutParams();
-                            mStickyParent = (ViewGroup) mStickyView.getParent();
-                            mStickyIndex = i;
-                        }
+        private View getStickyView(View checkView, int viewIndex) {
+            if (mStickyView != null) {
+                return mStickyView;
+            }
+            if (TAG_STICKY.equals(checkView.getTag()) || TAG_STICKY.equals(checkView.getTag(R.id.tag_sticky))) {
+                mStickyView = checkView;
+                mStickyParams = mStickyView.getLayoutParams();
+                mStickyParent = (ViewGroup) mStickyView.getParent();
+                mStickyIndex = viewIndex;
+                return mStickyView;
+            }
+            if (checkView instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) checkView;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View sv = getStickyView(vg.getChildAt(i), i);
+                    if (sv != null) {
+                        return sv;
                     }
                 }
             }
+            return null;
         }
 
         /**
@@ -224,22 +241,25 @@ public final class StickyNestedScrollLayout extends FrameLayout {
         @Override
         protected void onScrollChanged(int l, int t, int oldl, int oldt) {
             super.onScrollChanged(l, t, oldl, oldt);
-            if (mStickyView != null) {
+            if (getStickyView() != null) {
                 int top = getStickyTop();
                 if (top > 0) {
-                    if (mFlAdd.getChildCount() > 0 && mFlAdd.getChildAt(0) == mStickyView) {
+                    if (mFlAdd.getChildCount() > 0 && mFlAdd.getChildAt(0) == getStickyView()) {
                         mFlAdd.removeAllViews();
+
                         mStickyParent.removeView(mEmptyView);
                         mStickyParams.height = mStickyParamsHeight;
-                        mStickyParent.addView(mStickyView, mStickyIndex, mStickyParams);
+                        mStickyParent.addView(getStickyView(), mStickyIndex, mStickyParams);
                     }
                 } else {
                     if (mFlAdd.getChildCount() == 0) {
-                        mStickyParent.removeView(mStickyView);
+                        mStickyParent.removeView(getStickyView());
                         mStickyParamsHeight = mStickyParams.height;
-                        mStickyParams.height = mStickyView.getHeight();
+                        mStickyParams.height = getStickyView().getHeight();
                         mStickyParent.addView(mEmptyView, mStickyIndex, mStickyParams);
-                        mFlAdd.addView(mStickyView, generateNewLayoutParams(mStickyParams));
+
+                        mFlAdd.setPadding(getStickyParentLeftToThis(mStickyParent), 0, 0, 0);
+                        mFlAdd.addView(getStickyView(), generateNewLayoutParams(mStickyParams));
                     }
                 }
 
@@ -250,15 +270,35 @@ public final class StickyNestedScrollLayout extends FrameLayout {
         }
 
         /**
+         * 悬浮view的父类距自己左边
+         */
+        private int getStickyParentLeftToThis(View v) {
+            if (v == null || v == this) {
+                return 0;
+            }
+            return v.getLeft() + getStickyParentLeftToThis((View) v.getParent());
+        }
+
+        /**
+         * 悬浮view距自己顶端
+         */
+        private int getStickyTopToThis(View v) {
+            if (v == null || v == this) {
+                return 0;
+            }
+            return v.getTop() + getStickyTopToThis((View) v.getParent());
+        }
+
+        /**
          * @return 悬浮view距顶部距离
          */
         @IntRange(from = 0)
         public int getStickyTop() {
-            if (mStickyView == null) {
+            if (getStickyView() == null) {
                 return 0;
             }
             View v = mStickyParent.getChildAt(mStickyIndex);
-            int top = v.getTop();
+            int top = getStickyTopToThis(v);
             if (v.getLayoutParams() instanceof MarginLayoutParams) {
                 top -= ((MarginLayoutParams) v.getLayoutParams()).topMargin;
             }
@@ -305,18 +345,18 @@ public final class StickyNestedScrollLayout extends FrameLayout {
      */
     @IntRange(from = 0)
     public int getStickyTop() {
-        return mStickyView.getStickyTop();
+        return mScrollView.getStickyTop();
     }
 
     public void setOnStickyScrollChangedListener(OnStickyScrollChangedListener listener) {
-        mStickyView.setOnStickyScrollChangedListener(listener);
+        mScrollView.setOnStickyScrollChangedListener(listener);
     }
 
     /**
      * 获得内部滑动的view，可设置Scroll相关操作
      */
     public NestedScrollView getScrollView() {
-        return mStickyView;
+        return mScrollView;
     }
 
     /**
@@ -327,7 +367,7 @@ public final class StickyNestedScrollLayout extends FrameLayout {
      */
     public void setChildTag(View child, String tag) {
         child.setTag(R.id.tag_sticky, tag);
+        mScrollView.mNoneSticky = false;
         requestLayout();
-        mStickyView.getStickyView();
     }
 }

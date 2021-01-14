@@ -8,39 +8,45 @@
 ### 还有其他置顶控件的问题：
 1.滑动类似RecyclerView并不会悬浮
 
-2.悬浮控件ui变化会导致错乱（如悬浮是可横滑的控件）
+2.悬浮的view重绘会导致ui错乱（如悬浮view是可横滑的控件）
 
 ## 使用方式：
 基于NestedScrollView所以只允许有一个child：
 
-然后加上android:tag="sticky"即可实现悬浮（目前只支持直接子类，在三级、四级child使用无效）
+然后加上android:tag="sticky"即可实现悬浮（任意child均可，只支持单悬浮）
 ```
     <com.wang.sticky.StickyNestedScrollLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <LinearLayout//只允许有一个child
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             ...
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="sticky"//目前只支持直接子类
-                android:text="悬浮"
-                android:textSize="30sp" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:tag="sticky"
+                    android:text="悬浮"
+                    android:textSize="30sp" />
+            </FrameLayout>
             ...
         </LinearLayout>
     </com.wang.sticky.StickyNestedScrollLayout>
 ```
-子类如果需要撑满StickyNestedScrollLayout只需要加上android:tag="match"即可
+子级如果需要撑满StickyNestedScrollLayout只需要加上android:tag="match"即可
 ```
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"//这里的match无效
-                android:tag="match"//高度match，任意child均可
+                android:tag="match"//高度match
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:spanCount="2" />
 ```
@@ -48,16 +54,20 @@
 ```
 StickyNestedScrollLayout.setChildTag(tv,"sticky");
 ```
-也可以设置悬浮监听，获得悬浮距离：
+也可以设置悬浮监听、获得悬浮距离、设置scroll监听等NestedScrollView的操作：
 ```
 StickyNestedScrollLayout.setOnStickyScrollChangedListener();
 StickyNestedScrollLayout.getStickyTop();
+StickyNestedScrollLayout.getScrollView();
 ```
 
-### 背景色问题：
+### 相关问题：
 首先说一下悬浮原理：当滑到顶端时，将要悬浮的view remove掉然后添加到顶部
 
-所以背景色自己再设置一下就行了
+
+背景色：请自己再设置一下
+
+左右空白：还是背景色问题，你的悬浮view请保持和StickyNestedScrollLayout一样宽（如有需要忽略左右margin，可以提issues）
 
 ## 导入方式
 你的build.gradle要有jitpack.io，大致如下：
@@ -72,7 +82,7 @@ allprojects {
 }
 ```
 然后：
-`implementation（或api） 'com.github.weimingjue:sticky:0.9.2'`
+`implementation（或api） 'com.github.weimingjue:sticky:0.9.5'`
 
 ## 说明
 如果没有tag="sticky"则它就是一个可嵌套滑动的view
