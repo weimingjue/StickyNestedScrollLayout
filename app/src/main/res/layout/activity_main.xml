@@ -19,7 +19,33 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1\n2\n3\n4\n5\n6\n7\n8\n9"
+                android:text="1\n2"
+                android:textSize="80sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3\n4"
+                android:textSize="80sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:tag="sticky"
+                android:text="悬浮1"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5\n6"
+                android:textSize="80sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7\n8\n9"
                 android:textSize="80sp" />
 
             <FrameLayout
@@ -27,14 +53,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tv_main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="50dp"
                     android:tag="sticky"
-                    android:text="悬浮"
+                    android:text="悬浮2"
                     android:textSize="30sp" />
             </FrameLayout>
 

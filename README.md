@@ -13,7 +13,7 @@
 ## 使用方式：
 基于NestedScrollView所以只允许有一个child：
 
-然后加上android:tag="sticky"即可实现悬浮（任意child均可，只支持单悬浮）
+然后加上android:tag="sticky"即可实现悬浮（任意child均可，支持多个tag悬浮）
 ```
     <com.wang.sticky.StickyNestedScrollLayout
         android:layout_width="match_parent"
@@ -24,6 +24,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             ...
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:tag="sticky"
+                android:text="悬浮1"
+                android:textSize="30sp" />
+            ...
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -33,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:tag="sticky"
-                    android:text="悬浮"
+                    android:text="悬浮2"
                     android:textSize="30sp" />
             </FrameLayout>
             ...
@@ -54,20 +63,20 @@
 ```
 StickyNestedScrollLayout.setChildTag(tv,"sticky");
 ```
-也可以设置悬浮监听、获得悬浮距离、设置scroll监听等NestedScrollView的操作：
+也可以设置悬浮监听、获得悬浮距离、修改悬浮背景、设置scroll监听等NestedScrollView的操作：
 ```
 StickyNestedScrollLayout.setOnStickyScrollChangedListener();
 StickyNestedScrollLayout.getStickyTop();
+StickyNestedScrollLayout.getStickyParent();
 StickyNestedScrollLayout.getScrollView();
 ```
 
 ### 相关问题：
 首先说一下悬浮原理：当滑到顶端时，将要悬浮的view remove掉然后添加到顶部
 
+背景色：请自己再设置一下或StickyNestedScrollLayout.getStickyParent()
 
-背景色：请自己再设置一下
-
-左右空白：还是背景色问题，你的悬浮view请保持和StickyNestedScrollLayout一样宽（如有需要忽略左右margin，可以提issues）
+左右空白：如想忽略左右margin，可以自行套一层FrameLayout
 
 ## 导入方式
 你的build.gradle要有jitpack.io，大致如下：
@@ -82,7 +91,7 @@ allprojects {
 }
 ```
 然后：
-`implementation（或api） 'com.github.weimingjue:sticky:0.9.5'`
+`implementation（或api） 'com.github.weimingjue:sticky:0.9.8'`
 
 ## 说明
 如果没有tag="sticky"则它就是一个可嵌套滑动的view
