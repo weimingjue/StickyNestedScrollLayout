@@ -11,46 +11,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1\n2"
-                android:textSize="80sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
                 android:layout_height="wrap_content"
                 android:text="3\n4"
-                android:textSize="80sp" />
+                android:textSize="80sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/tv2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:tag="sticky"
                 android:text="悬浮1"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv1" />
 
             <TextView
+                android:id="@+id/tv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5\n6"
-                android:textSize="80sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7\n8\n9"
-                android:textSize="80sp" />
+                android:textSize="80sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv2" />
 
             <FrameLayout
+                android:id="@+id/tv5"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv3">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -64,10 +66,13 @@
             </FrameLayout>
 
             <TextView
+                android:id="@+id/tv6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="哈哈"
-                android:textSize="80sp" />
+                android:textSize="80sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv5" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_main"
@@ -75,7 +80,9 @@
                 android:layout_height="match_parent"
                 android:tag="match"
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv6"
                 app:spanCount="2" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.wang.sticky.StickyNestedScrollLayout>
 </LinearLayout>

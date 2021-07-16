@@ -1,5 +1,4 @@
 # 主要解决AppBarLayout的置顶效果存在的以下问题
-
 1.头部超过一屏回拉会出现明显卡顿
 
 2.惯性滑动无法用手指停下
@@ -91,11 +90,13 @@ allprojects {
 }
 ```
 然后：
-`implementation（或api） 'com.github.weimingjue:sticky:0.9.8'`
+`implementation（或api） 'com.github.weimingjue:sticky:0.9.9'`
 
 ## 说明
 如果没有tag="sticky"则它就是一个可嵌套滑动的view
 
 支持androidX所有view及第三方的View嵌套，不支持ListView
+
+Android5.0及以后可以使用RelativeLayout和ConstantLayout
 
 无需混淆配置
